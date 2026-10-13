@@ -329,3 +329,8 @@ html.isheet-open{overflow:hidden}
 .det-known{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;background:var(--blue-soft);border-radius:10px;padding:6px 10px}
 .det-known button{background:none;border:0;text-decoration:underline;font-size:13px;color:var(--muted);min-height:32px}
 .dose-product{font-family:var(--f-mono);font-size:13px;background:var(--yellow);border:2px solid var(--ink);border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:4px}
+
+.err{display:flex;flex-direction:column;gap:10px}
+.err p{margin:0}
+.err-retry{align-self:flex-start}
+.err-code{font-family:var(--f-mono);font-size:12px;color:var(--muted)}

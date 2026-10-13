@@ -1,5 +1,5 @@
 /* Mamaschine service worker: makes the app installable and usable with bad reception in the Waschkeller. */
-const VERSION = "mm-v2";
+const VERSION = "mm-v3";
 const CORE = [
   "/", "/index.html", "/style.css", "/app.js", "/install.js",
   "/werben.html", "/impressum.html", "/datenschutz.html",
@@ -35,13 +35,21 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // Assets: serve from cache, refresh in the background.
-  e.respondWith(
-    caches.match(req).then((cached) => {
-      const fresh = fetch(req)
+  // Code and styles: always try the network first so a new release never mixes with old files.
+  if (/\.(js|css|webmanifest)$/.test(url.pathname)) {
+    e.respondWith(
+      fetch(req)
         .then((res) => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); } return res; })
-        .catch(() => cached);
-      return cached || fresh;
-    })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // Fonts, icons, images: cache first.
+  e.respondWith(
+    caches.match(req).then((cached) => cached || fetch(req).then((res) => {
+      if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); }
+      return res;
+    }))
   );
 });

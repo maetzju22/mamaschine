@@ -146,20 +146,30 @@ document.querySelectorAll("[data-ltab]").forEach((b) => (b.onclick = () => {
 }));
 
 /* ================= photos ================= */
-async function shrink(file, max = 1280) {
+function canvasToPart(src, w, h, max) {
+  const k = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement("canvas");
+  c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height); // transparent PNGs would turn black
+  ctx.drawImage(src, 0, 0, c.width, c.height);
+  const url = c.toDataURL("image/jpeg", 0.78);
+  return { media_type: "image/jpeg", data: url.split(",")[1], url };
+}
+/* Every photo becomes a small JPEG: faster upload, faster analysis, and HEIC from iPhones works too. */
+async function shrink(file, max = 1152) {
   try {
-    const bmp = await createImageBitmap(file);
-    const k = Math.min(1, max / Math.max(bmp.width, bmp.height));
-    const c = document.createElement("canvas");
-    c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
-    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
-    const url = c.toDataURL("image/jpeg", 0.8);
-    return { media_type: "image/jpeg", data: url.split(",")[1], url };
-  } catch {
-    const url = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
-    const mt = (url.match(/^data:(.*?);/) || [])[1] || "image/jpeg";
-    return { media_type: mt, data: url.split(",")[1], url };
-  }
+    const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+    return canvasToPart(bmp, bmp.width, bmp.height, max);
+  } catch {}
+  try {
+    const src = URL.createObjectURL(file);
+    const img = new Image(); img.src = src; await img.decode();
+    const part = canvasToPart(img, img.naturalWidth, img.naturalHeight, max);
+    URL.revokeObjectURL(src);
+    return part;
+  } catch {}
+  throw new Error("Dieses Foto kann dein Browser nicht öffnen. Nimm bitte ein anderes oder mach ein neues Foto.");
 }
 async function thumbOf(url, size = 120) {
   const img = new Image(); img.src = url; await img.decode().catch(() => {});
@@ -174,7 +184,7 @@ function resetMachineShot() {
 }
 async function onMachineFile(e) {
   const f = e.target.files[0]; if (!f) return;
-  state.machinePhoto = await shrink(f);
+  try { state.machinePhoto = await shrink(f); } catch (err) { toast(err.message); e.target.value = ""; return; }
   $("mShot").classList.add("has");
   $("mShotLabel").innerHTML = `<img src="${state.machinePhoto.url}" alt="Foto deiner Waschmaschine"><small>Passt. Wird bei der Analyse gespeichert.</small>`;
   e.target.value = "";
@@ -182,7 +192,10 @@ async function onMachineFile(e) {
 $("mInput").onchange = onMachineFile;
 $("mGallery").onchange = onMachineFile;
 async function addLaundry(files) {
-  for (const f of files) { if (state.laundry.length >= 3) break; state.laundry.push(await shrink(f)); }
+  for (const f of files) {
+    if (state.laundry.length >= 3) break;
+    try { state.laundry.push(await shrink(f)); } catch (err) { toast(err.message); }
+  }
   const box = $("lThumbs"); box.innerHTML = "";
   state.laundry.forEach((p, i) => { const img = new Image(); img.src = p.url; img.alt = "Wäschefoto " + (i + 1); box.append(img); });
   if (state.laundry.length) {
@@ -214,7 +227,7 @@ function renderDet() {
     : state.knownDet.length ? "Neues Waschmittel? Einfach fotografieren." : "Optional. Mamaschine erkennt Marke und Sorte und dosiert danach.";
 }
 async function addDet(files) {
-  for (const f of files) { if (state.detPhotos.length >= 2) { toast("Zwei Waschmittel-Fotos reichen."); break; } state.detPhotos.push(await shrink(f, 1024)); }
+  for (const f of files) { if (state.detPhotos.length >= 2) { toast("Zwei Waschmittel-Fotos reichen."); break; } try { state.detPhotos.push(await shrink(f, 1024)); } catch (err) { toast(err.message); } }
   renderDet();
 }
 $("dInput").onchange = (e) => { addDet(e.target.files); e.target.value = ""; };
@@ -396,7 +409,16 @@ function show(which) {
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 $("stopBtn").onclick = () => { state.ctl?.abort(); stopSpin(); show("app"); };
 
-function showErr(msg) { $("errBox").textContent = msg || ""; $("errBox").hidden = !msg; }
+function showErr(msg, { retry = false, code = "", fallback = false } = {}) {
+  const box = $("errBox");
+  box.hidden = !msg;
+  if (!msg) { box.textContent = ""; return; }
+  box.innerHTML = `<p>${esc(msg)}</p>${retry ? `<button type="button" class="btn btn-ink err-retry">Nochmal versuchen</button>` : ""}${fallback ? `<button type="button" class="btn err-fallback" style="background:var(--card)">Ohne Foto weitermachen</button>` : ""}${code ? `<small class="err-code">Code: ${esc(code)}</small>` : ""}`;
+  box.querySelector(".err-retry")?.addEventListener("click", () => $("goBtn").click());
+  box.querySelector(".err-fallback")?.addEventListener("click", () => { showErr(""); setLTab("picker"); $("lTabPicker").scrollIntoView({ behavior: "smooth", block: "center" }); });
+  box.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+class AppError extends Error { constructor(msg, code, retry = true) { super(msg); this.code = code; this.retry = retry; } }
 
 /* ================= GO ================= */
 $("goBtn").onclick = async () => {
@@ -427,6 +449,8 @@ $("goBtn").onclick = async () => {
     .concat(usePicker ? [] : state.laundry.map(tag("laundry")))
     .concat(state.detPhotos.map(tag("detergent")));
   state.ctl = new AbortController();
+  let timedOut = false;
+  const killer = setTimeout(() => { timedOut = true; state.ctl.abort(); }, 70000);
   startSpin(images.map((i) => i.url));
   const minSpin = wait(3000);
   try {
@@ -441,10 +465,16 @@ $("goBtn").onclick = async () => {
         ...(usePicker ? { items: [...state.picked].map((k) => CATS[k].label), amount_kg: state.amount, dirt: { 0.75: "leicht", 1: "normal", 1.35: "stark (Festival)" }[state.dirt] || "normal" } : {}),
       }),
     });
-    const data = await r.json().catch(() => ({}));
+    const data = await r.json().catch(() => null);
     await minSpin;
-    if (r.status === 429) throw new Error("Zu viele Waschgänge auf einmal. Gönn der Trommel eine Minute Pause.");
-    if (!r.ok || !data.loads) throw new Error(data.message || "Die Trommel hat sich verschluckt. Probier's nochmal.");
+    if (!data) {
+      if (r.status === 429) throw new AppError("Gerade waschen alle gleichzeitig. Gönn der Trommel eine Minute Pause.", "429");
+      if (r.status === 502 || r.status === 504) throw new AppError("Das hat zu lange gedauert. Probier's nochmal, gern mit weniger Fotos.", String(r.status));
+      throw new AppError("Die Trommel hat sich verschluckt. Probier's nochmal.", "http-" + r.status);
+    }
+    if (!r.ok || !Array.isArray(data.loads) || !data.loads.length) {
+      throw new AppError(data.message || "Die Trommel hat sich verschluckt. Probier's nochmal.", data.error || "http-" + r.status, !["quota", "no_laundry", "image", "too_large", "gateway_inactive"].includes(data.error));
+    }
     let useMachine = machine;
     if (pendingPhoto && data.machine) {
       const thumb = await thumbOf(state.machinePhoto.url);
@@ -460,9 +490,16 @@ $("goBtn").onclick = async () => {
     }
     stopSpin(); renderResult(data, { machine: useMachine });
   } catch (e) {
+    clearTimeout(killer);
     stopSpin(); show("app");
-    if (e.name === "AbortError") return;
-    showErr(e.message || "Da ist was schiefgelaufen. Probier's nochmal.");
+    if (e.name === "AbortError" && !timedOut) return;
+    if (timedOut) return showErr("Das hat zu lange gedauert. Probier's nochmal, gern mit weniger Fotos.", { retry: true, code: "client-timeout", fallback: true });
+    if (e instanceof AppError) return showErr(e.message, { retry: e.retry, code: e.code, fallback: ["quota", "gateway_inactive", "504", "client-timeout"].includes(e.code) });
+    if (e instanceof TypeError) return showErr("Keine Verbindung zum Server. Check kurz dein Internet und probier's nochmal.", { retry: true, code: "offline" });
+    showErr("Da ist was schiefgelaufen. Probier's nochmal.", { retry: true, code: (e && e.name) || "unknown" });
+    console.error(e);
+  } finally {
+    clearTimeout(killer);
   }
 };
 
@@ -562,7 +599,7 @@ function started(L, demo) {
   } else toast("Im echten Leben würde das jetzt zählen.");
   const mins = Number(L.duration_min) || 120;
   const end = Date.now() + mins * 60000;
-  store.set("timer", end); runTimer();
+  store.set("timer", end); store.set("notified", false); runTimer();
   try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch {}
 }
 let timerI;
@@ -585,7 +622,6 @@ function runTimer() {
     const h = Math.floor(left / 3600000), m = Math.ceil((left % 3600000) / 60000);
     $("timerText").textContent = `Wäsche fertig ca. ${at} · noch ${h ? h + " h " : ""}${m} min`;
   };
-  store.set("notified", false);
   $("timerbar").hidden = false; tick(); timerI = setInterval(tick, 20000);
 }
 $("timerStop").onclick = () => { store.set("timer", 0); clearInterval(timerI); $("timerbar").hidden = true; };
