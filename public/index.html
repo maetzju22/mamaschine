@@ -8,11 +8,15 @@
 <meta property="og:title" content="Mamaschine – Weil Mama nicht mehr mitwäscht">
 <meta property="og:description" content="Der Waschmaschinen-Dolmetscher für alle, die bisher dachten, die Wäsche wäscht sich selbst.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://mamaschine.net/">
+<link rel="canonical" href="https://mamaschine.net/">
 <meta name="theme-color" content="#FFD21F">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="preload" href="/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/archivo-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Mamaschine">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -41,8 +45,8 @@
       <span class="counter" id="counterBadge">Waschgänge ohne Mama: <b id="counterNum">0</b></span>
     </div>
   </div>
-  <div class="hero-art" aria-hidden="true">
-    <svg viewBox="0 0 260 300" class="wm-face">
+  <div class="hero-art">
+    <svg viewBox="0 0 260 300" class="wm-face" aria-hidden="true">
       <rect x="10" y="10" width="240" height="280" rx="26" fill="var(--card)" stroke="var(--ink)" stroke-width="5"/>
       <line x1="10" y1="66" x2="250" y2="66" stroke="var(--ink)" stroke-width="5"/>
       <rect x="28" y="26" width="70" height="26" rx="5" fill="none" stroke="var(--ink)" stroke-width="4"/>
@@ -55,7 +59,10 @@
       <path d="M105 205q25 22 50 0" stroke="var(--ink)" stroke-width="5" fill="none" stroke-linecap="round"/>
       <path d="M60 222q35 -18 70 0t70 0" stroke="var(--card)" stroke-width="5" fill="none" opacity=".7"/>
     </svg>
-    <p class="speech">„Keine Angst. Ich beiß nur Socken.“</p>
+    <button type="button" class="speech" id="tip" aria-live="polite" aria-label="Nächster Wasch-Tipp">
+      <span class="speech-k" id="tipLabel">Mamaschine sagt</span>
+      <span class="speech-t" id="tipText">„Keine Angst. Ich beiß nur Socken.“</span>
+    </button>
   </div>
 </section>
 
@@ -76,6 +83,7 @@
 
       <div id="mTabFoto">
         <label class="shot" id="mShot"><input id="mInput" type="file" accept="image/*" capture="environment"><span class="shot-l" id="mShotLabel"><b>Bedienfeld fotografieren</b><small>Drehknopf, Tasten und am besten auch das Waschmittelfach</small></span></label>
+        <label class="text-link">Aus Galerie wählen<input id="mGallery" type="file" accept="image/*"></label>
         <p class="fine">Wird nach der ersten Analyse gespeichert. Danach nie wieder nötig.</p>
       </div>
 
@@ -217,9 +225,9 @@
 </main>
 
 <footer class="foot wrap">
-  <p><b>Mamaschine</b> · Weil Mama nicht mehr mitwäscht.</p>
-  <p class="fine">Mit Augenzwinkern gemacht, für alle Geschlechter, die vor Waschmaschinen Respekt haben. Die Anleitung ist eine Hilfe, kein Ersatz für das Pflegeetikett. Fotos werden nur für die Analyse verwendet und nicht gespeichert. Deine Maschinen merkt sich nur dein Browser.</p>
-  <p class="fine"><a href="/werben.html">Werben auf Mamaschine</a></p>
+  <p class="foot-brand"><b>MAMASCHINE</b> – a Wilson22 production<br><span>Made in Austria with love</span></p>
+  <p class="fine">Mit Augenzwinkern gemacht, für alle, die vor Waschmaschinen Respekt haben. Die Anleitung ist eine Hilfe, kein Ersatz für Pflegeetikett und Bedienungsanleitung. Fotos werden nur für die Analyse verwendet und nicht gespeichert. Deine Maschinen merkt sich nur dein Handy.</p>
+  <nav class="foot-nav" aria-label="Rechtliches"><a href="/werben.html">Werben</a><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></nav>
 </footer>
 
 <div class="timerbar" id="timerbar" hidden><span id="timerText"></span><button type="button" id="timerStop" class="text-link">Ausblenden</button></div>

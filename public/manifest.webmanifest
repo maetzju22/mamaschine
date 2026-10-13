@@ -1,0 +1,16 @@
+{
+  "name": "Mamaschine",
+  "short_name": "Mamaschine",
+  "description": "Weil Mama nicht mehr mitwäscht. Foto rein, Trommel dreht, Anleitung raus.",
+  "lang": "de",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ECEEE6",
+  "theme_color": "#FFD21F",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

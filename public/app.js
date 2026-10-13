@@ -170,13 +170,15 @@ function resetMachineShot() {
   $("mShot").classList.remove("has");
   $("mShotLabel").innerHTML = "<b>Bedienfeld fotografieren</b><small>Drehknopf, Tasten und am besten auch das Waschmittelfach</small>";
 }
-$("mInput").onchange = async (e) => {
+async function onMachineFile(e) {
   const f = e.target.files[0]; if (!f) return;
   state.machinePhoto = await shrink(f);
   $("mShot").classList.add("has");
   $("mShotLabel").innerHTML = `<img src="${state.machinePhoto.url}" alt="Foto deiner Waschmaschine"><small>Passt. Wird bei der Analyse gespeichert.</small>`;
   e.target.value = "";
-};
+}
+$("mInput").onchange = onMachineFile;
+$("mGallery").onchange = onMachineFile;
 async function addLaundry(files) {
   for (const f of files) { if (state.laundry.length >= 3) break; state.laundry.push(await shrink(f)); }
   const box = $("lThumbs"); box.innerHTML = "";
@@ -480,8 +482,8 @@ function renderResult(data, { machine, demo = false }) {
           <div class="dose-where">${esc(L.detergent?.where)}</div>
           ${L.detergent?.note ? `<p class="dose-note">${esc(L.detergent.note)}</p>` : ""}
           ${L.softener?.use ? `<p class="dose-note"><b>Weichspüler:</b> ${esc(L.softener.amount)} → ${esc(L.softener.where)}</p>` : ""}
-          ${drawerHtml(machine, L, data)}
         </div>
+        ${(() => { const d = drawerHtml(machine, L, data); return d ? `<div class="drawer-wrap">${d}</div>` : ""; })()}
       </div>
       <div>
         <p class="kicker" style="margin-bottom:8px">Schritt für Schritt · antippen zum Abhaken</p>
@@ -543,7 +545,7 @@ function runTimer() {
 $("timerStop").onclick = () => { store.set("timer", 0); clearInterval(timerI); $("timerbar").hidden = true; };
 
 async function copyText(L, mName) {
-  const txt = [`Mamaschine-Anleitung (${mName})`, `Programm: ${L.program} · ${L.temp_c} °C · ${L.spin_rpm} U/min`, `Waschmittel: ${L.detergent?.amount} → ${L.detergent?.where}`, ...(L.steps || []).map((s, i) => `${i + 1}. ${s.title}: ${s.detail}`), "", "mamaschine.netlify.app"].join("\n");
+  const txt = [`Mamaschine-Anleitung (${mName})`, `Programm: ${L.program} · ${L.temp_c} °C · ${L.spin_rpm} U/min`, `Waschmittel: ${L.detergent?.amount} → ${L.detergent?.where}`, ...(L.steps || []).map((s, i) => `${i + 1}. ${s.title}: ${s.detail}`), "", "mamaschine.net"].join("\n");
   try { await navigator.clipboard.writeText(txt); toast("Kopiert. Schick's an jemanden, der's braucht."); }
   catch { toast("Kopieren ging nicht. Mach einen Screenshot."); }
 }
@@ -590,6 +592,55 @@ const SYMBOLS = [
   [`<svg viewBox="0 0 64 56" aria-hidden="true"><circle cx="32" cy="28" r="20" fill="none" stroke="var(--ink)" stroke-width="3.5"/>${txt("P").replace('y="40"', 'y="34"')}</svg>`, "Kreis mit Buchstabe", "Nur für die chemische Reinigung. Dich betrifft das nicht."],
 ];
 $("symbols").innerHTML = SYMBOLS.map(([svg, t, d]) => `<div class="sym">${svg}<b>${t}</b><small>${d}</small></div>`).join("");
+
+
+/* ================= rotating tips ================= */
+const TIPS = [
+  "Taschen leeren. Ein vergessenes Taschentuch ergibt fünf Kilo Konfetti.",
+  "Jeans auf links drehen, dann bleibt das Blau länger blau.",
+  "Neue rote Teile die ersten paar Male allein waschen.",
+  "Eine Handbreit Luft in der Trommel lassen. Wäsche braucht Platz zum Tanzen.",
+  "40 °C reichen für fast alles. Spart Strom und Nerven.",
+  "Handtücher bei 60 °C, aber ohne Weichspüler. Sonst saugen sie schlechter.",
+  "Sportsachen nie mit Weichspüler. Der verklebt die Fasern.",
+  "Reißverschlüsse zu, Knöpfe auf. Klingt komisch, schont aber beides.",
+  "Nach dem Waschen sofort aufhängen, sonst riecht's nach Keller.",
+  "Tür und Waschmittelfach nach dem Waschen offen lassen. Ich will auch mal lüften.",
+  "Einmal im Monat leer bei 60 °C laufen lassen. Wellness für die Trommel.",
+  "Flusensieb ab und zu putzen. Meist unten vorne hinter einer kleinen Klappe.",
+  "Mehr Waschmittel heißt nicht sauberer. Nur schaumiger.",
+  "Socken paarweise mit einer Klammer zusammenstecken. Problem gelöst.",
+  "BHs und Feines ins Wäschenetz. Die Bügel danken es dir.",
+  "Wolle nie in den Trockner. Außer der Pulli soll dem Hund passen.",
+  "Flecken sofort mit kaltem Wasser behandeln. Heißes Wasser macht viele Flecken fester.",
+  "Das Pflegeetikett hat immer recht. Auch wenn's nervt.",
+  "Kurzprogramme sind für wenig und kaum Getragenes. Nicht für die Festival-Ladung.",
+  "Eco-Programme dauern länger, brauchen aber weniger Strom.",
+  "Hemden mit 800 Umdrehungen schleudern. Weniger Falten, weniger Bügeln.",
+  "Hemden nass auf einen Bügel hängen. Spart oft das Bügeleisen.",
+  "Caps gehören in die Trommel, nicht ins Fach.",
+  "Dunkles auf links waschen. So bleibt die Farbe satt.",
+  "Ein Farbfangtuch kostet wenig und rettet viel Weißes.",
+];
+(function tips() {
+  const btn = $("tip"), label = $("tipLabel"), text = $("tipText");
+  if (!btn) return;
+  let order = [], n = 0, timer;
+  const shuffle = () => { order = TIPS.map((_, i) => i).sort(() => Math.random() - 0.5); };
+  const next = () => {
+    if (!order.length) shuffle();
+    const i = order.shift(); n++;
+    btn.classList.add("swap");
+    setTimeout(() => {
+      label.textContent = "Tipp " + n;
+      text.textContent = TIPS[i];
+      btn.classList.remove("swap");
+    }, 220);
+  };
+  const schedule = (ms) => { clearTimeout(timer); timer = setTimeout(() => { if (!document.hidden) next(); schedule(8000); }, ms); };
+  btn.addEventListener("click", () => { next(); schedule(12000); });
+  schedule(6000);
+})();
 
 /* ================= init ================= */
 if (!activeMachine() && state.machines[0]) state.activeId = state.machines[0].id;
