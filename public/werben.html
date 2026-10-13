@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Werben auf Mamaschine</title>
+<meta name="description" content="Kontextuelle Werbung für Waschmittel-, Waschmaschinen- und Haushaltsmarken. Genau dort, wo Menschen zum ersten Mal selbst waschen.">
+<meta name="theme-color" content="#FFD21F">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="/style.css">
+<style>
+.ad-hero{padding-block:32px 40px;display:flex;flex-direction:column;gap:16px;max-width:900px}
+.ad-hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(44px,7.5vw,86px);line-height:.95;text-transform:uppercase}
+.ad-sec{padding-block:40px;border-top:3px solid var(--ink);display:flex;flex-direction:column;gap:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.c{background:var(--card);border:3px solid var(--ink);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:5px 5px 0 var(--ink)}
+.c h3{font-family:var(--f-display);font-weight:400;font-size:24px;text-transform:uppercase;line-height:1.05}
+.c p{color:var(--muted);font-size:16px}
+.c .tag{font-family:var(--f-mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--yellow);align-self:flex-start;padding:2px 8px;border-radius:5px}
+.moments{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.moment{border-left:6px solid var(--yellow);background:var(--card);padding:12px 14px;border-radius:0 10px 10px 0}
+.moment b{display:block;font-size:17px}
+.moment span{color:var(--muted);font-size:15px}
+.signal{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;font-family:var(--f-mono);font-size:14px}
+.signal div{background:var(--ink);color:var(--card);border-radius:10px;padding:12px}
+.signal small{display:block;color:var(--yellow);text-transform:uppercase;letter-spacing:.06em;font-size:11px;margin-bottom:4px}
+.form{background:var(--card);border:3px solid var(--ink);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:8px 8px 0 var(--ink);max-width:760px}
+.form .field textarea{min-height:110px}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.checks label,.consent{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px}
+.checks input,.consent input{width:20px;height:20px;accent-color:var(--ink);margin-top:2px;flex:none}
+.consent{font-weight:400;color:var(--muted)}
+.hp{position:absolute;left:-9999px}
+.mail{font-family:var(--f-mono);font-weight:700;background:var(--yellow);padding:1px 6px;border-radius:5px;user-select:all}
+</style>
+</head>
+<body>
+<div class="tape" aria-hidden="true"></div>
+<header class="top wrap">
+  <a class="logo" href="/" aria-label="Mamaschine Startseite">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="var(--ink)"/><circle cx="20" cy="23" r="10" fill="var(--blue)" stroke="var(--yellow)" stroke-width="3"/><path d="M14 23q3 3 6 0" stroke="var(--ink)" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="10" cy="8.5" r="2" fill="var(--yellow)"/><rect x="24" y="7" width="10" height="3" rx="1.5" fill="var(--yellow)"/></svg>
+    <span>Mama<b>schine</b></span>
+  </a>
+  <nav class="nav"><a href="/">Zur App</a><a class="ad-pill" href="#kontakt">Kontakt</a></nav>
+</header>
+
+<main>
+<section class="ad-hero wrap">
+  <p class="kicker">Für Werbetreibende</p>
+  <h1>Werbung, die im Wasch&shy;keller <span class="hl">ankommt.</span></h1>
+  <p class="lead">Mamaschine erreicht Menschen in genau dem Moment, in dem sie zum ersten Mal selbst waschen: vor der eigenen Maschine, mit dem eigenen Wäschehaufen und der ersten eigenen Waschmittelflasche in der Hand. Wer hier ist, hat das Problem, für das Ihr Produkt gemacht ist. Jetzt.</p>
+  <div class="hero-cta"><a class="btn btn-yellow" href="#kontakt">Gespräch anfragen</a><a class="text-link" href="#formate">Formate ansehen</a></div>
+</section>
+
+<section class="ad-sec wrap">
+  <p class="kicker">Zielgruppe</p>
+  <h2 class="sec-h">Die Erstwäscher.</h2>
+  <p class="lead small">Junge Erwachsene in Lebensphasen, in denen Haushaltsmarken zum ersten Mal selbst gewählt werden. Was im ersten eigenen Haushalt im Einkaufswagen landet, bleibt dort oft jahrelang.</p>
+  <div class="moments">
+    <div class="moment"><b>Raus aus dem Elternhaus</b><span>Erste eigene Wohnung, erste eigene Maschine, null Erfahrung.</span></div>
+    <div class="moment"><b>Studium, Lehre, WG</b><span>Geteilte Maschine im Keller, wechselnde Waschmittel, viel Sportwäsche.</span></div>
+    <div class="moment"><b>Erstes Eigenheim</b><span>Junge Paare richten ein und kaufen Weißware zum ersten Mal selbst.</span></div>
+    <div class="moment"><b>Neu-Singles</b><span>Plötzlich allein mit dem Gerät, das bisher „jemand anderer“ bedient hat.</span></div>
+  </div>
+</section>
+
+<section class="ad-sec wrap">
+  <p class="kicker">Ohne Streuverlust</p>
+  <h2 class="sec-h">Kontext statt Tracking.</h2>
+  <p class="lead small">Wir brauchen keine Cookies und keine Nutzerprofile, um zu wissen, was gerade gebraucht wird. Die Situation sagt es uns. Ihre Botschaft erscheint genau im passenden Moment und ist rein kontextuell ausgespielt, also DSGVO-freundlich und markensicher.</p>
+  <div class="signal">
+    <div><small>Signal</small>Welche Maschine: Marke, Bauart, Fassungsvermögen</div>
+    <div><small>Signal</small>Welches Waschmittel gerade verwendet wird</div>
+    <div><small>Signal</small>Was gewaschen wird: Sport, Wolle, Weißes, Jeans, Bettwäsche</div>
+    <div><small>Signal</small>Welches Problem akut ist: Fleck, verfärbt, eingegangen, Geruch</div>
+  </div>
+</section>
+
+<section class="ad-sec wrap" id="formate">
+  <p class="kicker">Formate</p>
+  <h2 class="sec-h">Wo Ihre Marke auftaucht.</h2>
+  <div class="cards">
+    <div class="c"><span class="tag">Waschmittel</span><h3>Dosier-Partner</h3><p>Ihre Marke direkt bei der Dosierangabe, mit der korrekten Menge für Ihr Produkt und die erkannte Wäsche. Werbung, die gleichzeitig Service ist.</p></div>
+    <div class="c"><span class="tag">Waschmaschinen</span><h3>Verifiziertes Hersteller-Profil</h3><p>Sie liefern Programmdaten Ihrer Modelle, wir machen daraus offizielle Schritt-für-Schritt-Anleitungen. Bei älteren Geräten ein dezenter Hinweis auf effizientere Nachfolger.</p></div>
+    <div class="c"><span class="tag">Pflege & Spezial</span><h3>Notfall-Sponsoring</h3><p>Fleckenentferner, Farbfangtücher, Wollwaschmittel, Maschinenreiniger: genau dort präsent, wo „Alles ist rosa“ oder „Pulli eingegangen“ gerade passiert ist.</p></div>
+    <div class="c"><span class="tag">Brand</span><h3>Etiketten-Lexikon</h3><p>Patenschaft für den Pflegesymbol-Kurs. Ein Bereich, der gespeichert, geteilt und immer wieder geöffnet wird.</p></div>
+    <div class="c"><span class="tag">Erstbezug</span><h3>Erste-Wohnung-Paket</h3><p>Gutscheine und Starter-Kits für den Einzug: Möbel, Elektromärkte, Umzugsdienste, Haushaltsversicherung (Stichwort Wasserschaden).</p></div>
+    <div class="c"><span class="tag">Gamification</span><h3>Abzeichen präsentiert von …</h3><p>„Schleuderkönig“, „Sockenflüsterer“: Unsere Erfolgs-Abzeichen mit Ihrem Absender. Wird gefeiert, nicht weggeklickt.</p></div>
+  </div>
+</section>
+
+<section class="ad-sec wrap">
+  <p class="kicker">Tonalität</p>
+  <h2 class="sec-h">Mit Augenzwinkern, nie peinlich.</h2>
+  <p class="lead small">Mamaschine nimmt Hilflosigkeit vor der Waschmaschine liebevoll auf die Schippe, aber nie die Menschen dahinter. Partnerinhalte entstehen gemeinsam mit Ihnen im selben Ton und bleiben klar als Partnerinhalt gekennzeichnet. Frühe Partner bekommen Gründungskonditionen und reden beim Format mit.</p>
+</section>
+
+<section class="ad-sec wrap" id="kontakt">
+  <p class="kicker">Kontakt</p>
+  <h2 class="sec-h">Reden wir drüber.</h2>
+  <p class="lead small">Schreiben Sie uns kurz, was Sie bewerben möchten. Wir melden uns innerhalb von zwei Werktagen. Direkt per Mail: <span class="mail">ads@mamaschine.at</span></p>
+
+  <form class="form" name="werbung" method="POST" action="/danke.html" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="werbung">
+    <p class="hp"><label>Nicht ausfüllen <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+    <div class="grid2">
+      <label class="field"><span>Unternehmen</span><input id="f-company" name="unternehmen" required autocomplete="organization"></label>
+      <label class="field"><span>Ihr Name</span><input id="f-name" name="name" required autocomplete="name"></label>
+      <label class="field"><span>E-Mail</span><input id="f-mail" type="email" name="email" required autocomplete="email"></label>
+      <label class="field"><span>Telefon <em>(optional)</em></span><input id="f-tel" type="tel" name="telefon" autocomplete="tel"></label>
+    </div>
+    <label class="field"><span>Branche</span>
+      <select id="f-branche" name="branche">
+        <option>Waschmittel & Pflegeprodukte</option>
+        <option>Waschmaschinen & Haushaltsgeräte</option>
+        <option>Handel (Drogerie, Elektro, Möbel)</option>
+        <option>Wohnen, Umzug & Versicherung</option>
+        <option>Agentur</option>
+        <option>Anderes</option>
+      </select>
+    </label>
+    <fieldset class="field" style="border:0;padding:0;margin:0"><legend style="padding:0;margin-bottom:6px">Interesse an</legend>
+      <div class="checks">
+        <label><input type="checkbox" name="formate[]" value="Dosier-Partner"> Dosier-Partner</label>
+        <label><input type="checkbox" name="formate[]" value="Hersteller-Profil"> Hersteller-Profil</label>
+        <label><input type="checkbox" name="formate[]" value="Notfall-Sponsoring"> Notfall-Sponsoring</label>
+        <label><input type="checkbox" name="formate[]" value="Etiketten-Lexikon"> Etiketten-Lexikon</label>
+        <label><input type="checkbox" name="formate[]" value="Erste-Wohnung-Paket"> Erste-Wohnung-Paket</label>
+        <label><input type="checkbox" name="formate[]" value="Abzeichen"> Abzeichen-Sponsoring</label>
+      </div>
+    </fieldset>
+    <label class="field"><span>Budgetrahmen <em>(optional)</em></span>
+      <select id="f-budget" name="budget"><option value="">Noch offen</option><option>unter 5.000 €</option><option>5.000–20.000 €</option><option>20.000–50.000 €</option><option>über 50.000 €</option></select>
+    </label>
+    <label class="field"><span>Ihre Nachricht</span><textarea id="f-msg" name="nachricht" rows="4" placeholder="Was möchten Sie bewerben, ab wann, für welchen Markt?"></textarea></label>
+    <label class="consent"><input type="checkbox" name="einwilligung" value="ja" required> Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage verwendet und an ads@mamaschine.at weitergeleitet werden.</label>
+    <button class="btn btn-yellow btn-big" type="submit">Anfrage senden</button>
+  </form>
+</section>
+</main>
+
+<footer class="foot wrap">
+  <p><b>Mamaschine</b> · Weil Mama nicht mehr mitwäscht.</p>
+  <p class="fine"><a href="/">Zurück zur App</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mamaschine – Weil Mama nicht mehr mitwäscht</title>
+<meta name="description" content="Waschmaschine und Wäschehaufen fotografieren, Trommel dreht, fertig ist deine Schritt-für-Schritt-Anleitung: Programm, Temperatur, wie viel Waschmittel und in welches Fach.">
+<meta property="og:title" content="Mamaschine – Weil Mama nicht mehr mitwäscht">
+<meta property="og:description" content="Der Waschmaschinen-Dolmetscher für alle, die bisher dachten, die Wäsche wäscht sich selbst.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FFD21F">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="tape" aria-hidden="true"></div>
+<header class="top wrap">
+  <a class="logo" href="/" aria-label="Mamaschine Startseite">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="var(--ink)"/><circle cx="20" cy="23" r="10" fill="var(--blue)" stroke="var(--yellow)" stroke-width="3"/><path d="M14 23q3 3 6 0" stroke="var(--ink)" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="10" cy="8.5" r="2" fill="var(--yellow)"/><rect x="24" y="7" width="10" height="3" rx="1.5" fill="var(--yellow)"/></svg>
+    <span>Mama<b>schine</b></span>
+  </a>
+  <nav class="nav">
+    <a href="#lexikon">Etiketten</a>
+    <a href="#notfall">Notfall</a>
+    <a class="ad-pill" href="/werben.html">Für Werbetreibende</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero wrap">
+  <div class="hero-copy">
+    <p class="kicker">Achtung · Mann vor Waschmaschine</p>
+    <h1>Waschen kann jeder.<br><span class="hl">Theoretisch.</span></h1>
+    <p class="lead">Mamaschine übersetzt deine Waschmaschine in Klartext. Foto rein, Trommel dreht, du kriegst eine Anleitung, die sogar um 23 Uhr nach dem dritten Bier funktioniert.</p>
+    <div class="hero-cta">
+      <a class="btn btn-yellow" href="#app">Ich trau mich</a>
+      <span class="counter" id="counterBadge">Waschgänge ohne Mama: <b id="counterNum">0</b></span>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <svg viewBox="0 0 260 300" class="wm-face">
+      <rect x="10" y="10" width="240" height="280" rx="26" fill="var(--card)" stroke="var(--ink)" stroke-width="5"/>
+      <line x1="10" y1="66" x2="250" y2="66" stroke="var(--ink)" stroke-width="5"/>
+      <rect x="28" y="26" width="70" height="26" rx="5" fill="none" stroke="var(--ink)" stroke-width="4"/>
+      <circle cx="206" cy="39" r="15" fill="var(--yellow)" stroke="var(--ink)" stroke-width="4"/>
+      <circle cx="166" cy="39" r="5" fill="var(--red)"/>
+      <circle cx="130" cy="180" r="84" fill="var(--blue)" stroke="var(--ink)" stroke-width="8"/>
+      <g class="eye-open"><circle cx="100" cy="165" r="15" fill="var(--card)" stroke="var(--ink)" stroke-width="4"/><circle cx="104" cy="168" r="7" fill="var(--ink)"/></g>
+      <g class="eye-wink"><circle cx="160" cy="165" r="15" fill="var(--card)" stroke="var(--ink)" stroke-width="4"/><circle cx="164" cy="168" r="7" fill="var(--ink)"/></g>
+      <path class="eye-lid" d="M145 167q15 10 30 0" stroke="var(--ink)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M105 205q25 22 50 0" stroke="var(--ink)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M60 222q35 -18 70 0t70 0" stroke="var(--card)" stroke-width="5" fill="none" opacity=".7"/>
+    </svg>
+    <p class="speech">„Keine Angst. Ich beiß nur Socken.“</p>
+  </div>
+</section>
+
+<section class="app wrap" id="app">
+  <div class="ai-status" id="aiStatus"><span class="dot"></span><span id="aiStatusText">Prüfe Foto-KI …</span></div>
+
+  <!-- STEP 1 machine -->
+  <article class="panel" id="stepMachine">
+    <header class="panel-h"><span class="num">1</span><h2>Deine Waschmaschine</h2></header>
+    <div class="machine-list" id="machineList" role="list"></div>
+
+    <div id="machineNew" class="machine-new">
+      <div class="seg" role="tablist" aria-label="Maschine erfassen">
+        <button type="button" role="tab" class="seg-b" data-mtab="foto" aria-selected="true">Foto machen</button>
+        <button type="button" role="tab" class="seg-b" data-mtab="manuell" aria-selected="false">Selbst eintippen</button>
+      </div>
+      <label class="field"><span>Spitzname</span><input id="mNick" type="text" maxlength="30" placeholder="z. B. Zuhause, Waschkeller, Bei Lisa"></label>
+
+      <div id="mTabFoto">
+        <label class="shot" id="mShot"><input id="mInput" type="file" accept="image/*" capture="environment"><span class="shot-l" id="mShotLabel"><b>Bedienfeld fotografieren</b><small>Drehknopf, Tasten und am besten auch das Waschmittelfach</small></span></label>
+        <p class="fine">Wird nach der ersten Analyse gespeichert. Danach nie wieder nötig.</p>
+      </div>
+
+      <div id="mTabManuell" hidden>
+        <div class="grid2">
+          <label class="field"><span>Marke</span><input id="mBrand" list="brands" placeholder="z. B. Bosch"></label>
+          <label class="field"><span>Modell <em>(optional)</em></span><input id="mModel" placeholder="steht am Typenschild"></label>
+          <label class="field"><span>Bauart</span><select id="mKind"><option>Frontlader</option><option>Toplader</option><option>Waschtrockner</option></select></label>
+          <label class="field"><span>Fassungsvermögen</span><select id="mCap"><option value="">weiß nicht</option><option>5</option><option>6</option><option selected>7</option><option>8</option><option>9</option><option>10</option></select></label>
+        </div>
+        <label class="field"><span>Waschmittelfach von links nach rechts</span>
+          <select id="mLayout">
+            <option value="">Keine Ahnung, ich schau nie rein</option>
+            <option value="I,✿,II">I · Blume · II</option>
+            <option value="II,✿,I">II · Blume · I</option>
+            <option value="I,II,✿">I · II · Blume</option>
+            <option value="II,I,✿">II · I · Blume</option>
+            <option value="II,✿">II · Blume (kein Vorwäschefach)</option>
+          </select>
+        </label>
+        <label class="field"><span>Programme am Drehknopf <em>(optional, mit Komma)</em></span><input id="mPrograms" placeholder="Baumwolle, Mix, Pflegeleicht, Wolle, Sport, 15 Min Kurz …"></label>
+        <datalist id="brands"><option>Bosch</option><option>Siemens</option><option>Miele</option><option>AEG</option><option>Samsung</option><option>LG</option><option>Beko</option><option>Gorenje</option><option>Whirlpool</option><option>Bauknecht</option><option>Haier</option><option>Candy</option><option>Hoover</option><option>Electrolux</option><option>Grundig</option><option>Indesit</option><option>Hisense</option><option>Sharp</option><option>Zanussi</option></datalist>
+        <button type="button" class="btn btn-ink" id="mSave">Maschine speichern</button>
+      </div>
+    </div>
+  </article>
+
+  <!-- STEP 2 laundry -->
+  <article class="panel">
+    <header class="panel-h"><span class="num">2</span><h2>Dein Wäschehaufen</h2></header>
+    <div class="seg" role="tablist" aria-label="Wäsche erfassen">
+      <button type="button" role="tab" class="seg-b" data-ltab="foto" aria-selected="true">Foto machen</button>
+      <button type="button" role="tab" class="seg-b" data-ltab="picker" aria-selected="false">Ohne Foto</button>
+    </div>
+    <div id="lTabFoto">
+      <label class="shot" id="lShot"><input id="lInput" type="file" accept="image/*" capture="environment"><span class="shot-l" id="lShotLabel"><b>Haufen fotografieren</b><small>Ruhig ausgebreitet, damit man was erkennt. Peinliches darf drin bleiben.</small></span></label>
+      <div class="thumbs" id="lThumbs"></div>
+      <label class="text-link">Aus Galerie wählen<input id="lGallery" type="file" accept="image/*" multiple></label>
+    </div>
+    <div id="lTabPicker" hidden>
+      <p class="fine">Tipp alles an, was im Haufen liegt.</p>
+      <div class="pick" id="picker"></div>
+      <div class="field"><span>Wie viel?</span>
+        <div class="chips" id="amountChips">
+          <button type="button" class="chip" data-v="2" aria-pressed="false">Ein Häufchen</button>
+          <button type="button" class="chip" data-v="4.5" aria-pressed="true">Normaler Haufen</button>
+          <button type="button" class="chip" data-v="7" aria-pressed="false">Berg seit Wochen</button>
+        </div>
+      </div>
+      <div class="field"><span>Wie dreckig?</span>
+        <div class="chips" id="dirtChips">
+          <button type="button" class="chip" data-v="0.75" aria-pressed="false">Einmal getragen</button>
+          <button type="button" class="chip" data-v="1" aria-pressed="true">Normal</button>
+          <button type="button" class="chip" data-v="1.35" aria-pressed="false">Nach dem Festival</button>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- STEP 3 details -->
+  <article class="panel">
+    <header class="panel-h"><span class="num">3</span><h2>Was hast du da?</h2></header>
+    <div class="field"><span>Waschmittel</span>
+      <div class="chips" id="detChips">
+        <button type="button" class="chip" data-v="Flüssigwaschmittel" aria-pressed="true">Flüssig</button>
+        <button type="button" class="chip" data-v="Pulver" aria-pressed="false">Pulver</button>
+        <button type="button" class="chip" data-v="Caps" aria-pressed="false">Caps</button>
+        <button type="button" class="chip" data-v="Colorwaschmittel" aria-pressed="false">Color</button>
+        <button type="button" class="chip" data-v="Keine Ahnung, irgendeine Flasche" aria-pressed="false">Keine Ahnung</button>
+      </div>
+    </div>
+    <div class="chips"><button type="button" class="chip" id="softChip" aria-pressed="false">+ Weichspüler vorhanden</button></div>
+    <div class="field">
+      <span>Wie hilflos bist du heute? <b id="panicLabel" class="panic-l"></b></span>
+      <input type="range" id="panic" min="1" max="5" step="1" value="3" aria-describedby="panicLabel">
+      <div class="range-ends"><small>Profi</small><small>Panik</small></div>
+    </div>
+    <label class="field"><span>Noch was? <em>(optional)</em></span><textarea id="note" rows="2" maxlength="400" placeholder="Rotweinfleck am Hemd, Date morgen, Shirt riecht nach Grill …"></textarea></label>
+  </article>
+
+  <div class="err" id="errBox" role="alert" hidden></div>
+  <div class="go-row">
+    <button class="btn btn-yellow btn-big" id="goBtn" type="button">Ab in die Trommel!</button>
+    <button class="text-link" id="demoBtn" type="button">Beispiel ansehen</button>
+  </div>
+</section>
+
+<!-- SPIN -->
+<section class="spin wrap" id="spin" hidden aria-live="polite">
+  <div class="wm" aria-hidden="true">
+    <div class="wm-panel"><span class="wm-tray"></span><span class="wm-led"></span><span class="wm-knob"></span></div>
+    <div class="wm-door">
+      <div class="wm-drum" id="drum"></div>
+      <div class="wm-water"></div>
+      <span class="bub" style="left:22%;width:10px;height:10px"></span>
+      <span class="bub" style="left:52%;width:14px;height:14px;animation-delay:.6s"></span>
+      <span class="bub" style="left:74%;width:8px;height:8px;animation-delay:1.3s"></span>
+    </div>
+    <div id="flyers"></div>
+  </div>
+  <p class="spin-status" id="spinStatus">Wäsche fliegt rein …</p>
+  <button class="text-link" id="stopBtn" type="button">Abbrechen</button>
+</section>
+
+<!-- RESULT -->
+<section class="result wrap" id="result" hidden></section>
+
+<!-- LEXIKON -->
+<section class="lexikon wrap" id="lexikon">
+  <p class="kicker">Hieroglyphen-Kurs</p>
+  <h2 class="sec-h">Was das Etikett dir sagen will</h2>
+  <p class="lead small">Das kleine Zettelchen im Shirt ist keine Deko. Hier die wichtigsten Zeichen.</p>
+  <div class="symbols" id="symbols"></div>
+</section>
+
+<!-- NOTFALL -->
+<section class="notfall wrap" id="notfall">
+  <p class="kicker">Notfall-Hotline</p>
+  <h2 class="sec-h">Es ist was passiert.</h2>
+  <div class="faq">
+    <details><summary>Alles ist rosa geworden.</summary><p>Passiert den Besten. Nicht in den Trockner! Sofort nochmal mit Farb- und Grauschleier-Entferner (Drogerie) nach Packungsanleitung waschen. Nächstes Mal: Rotes und Neues separat, oder ein Farbfangtuch dazu.</p></details>
+    <details><summary>Mein Pulli passt jetzt dem Hund.</summary><p>Wolle zu heiß gewaschen. Rettungsversuch: 30 Minuten in lauwarmem Wasser mit einem Schuss Haarspülung einweichen, nicht auswringen, vorsichtig in Form ziehen und liegend auf einem Handtuch trocknen. Garantie gibt's keine.</p></details>
+    <details><summary>Die Tür geht nicht auf.</summary><p>Nach Programmende bleibt die Tür oft 1–3 Minuten verriegelt. Warten. Steht noch Wasser drin, das Programm „Abpumpen“ oder „Schleudern“ starten. Hilft nichts: Notentriegelung, meist hinter der kleinen Klappe unten vorne beim Flusensieb. Handtuch drunterlegen.</p></details>
+    <details><summary>Es schäumt aus allen Ritzen.</summary><p>Zu viel Waschmittel. Programm stoppen, abpumpen lassen, dann „Spülen“ ohne Waschmittel laufen lassen. Beim nächsten Mal: Messbecher benutzen, nicht nach Gefühl kippen.</p></details>
+    <details><summary>Die frische Wäsche stinkt.</summary><p>Zu lange nass in der Trommel gelegen. Nochmal kurz waschen und gleich aufhängen. Und einmal im Monat die leere Maschine mit 60–90 °C durchlaufen lassen, Tür danach offen lassen.</p></details>
+    <details><summary>Eine Socke fehlt.</summary><p>Erst im Gummi der Tür nachschauen, dann im Flusensieb. Wenn sie dort nicht ist: Sie ist an einem besseren Ort. Die andere hebst du trotzdem auf, so machen das alle.</p></details>
+    <details><summary>Das Display zeigt einen Fehlercode.</summary><p>Wasserhahn hinter der Maschine aufgedreht? Ablaufschlauch geknickt? Flusensieb voll? Sonst Marke plus Code googeln, zum Beispiel „Bosch E18“. Die meisten Codes haben eine harmlose Ursache.</p></details>
+  </div>
+</section>
+
+<section class="ad-teaser wrap">
+  <div>
+    <p class="kicker">Für Marken</p>
+    <h2 class="sec-h">Sie verkaufen Waschmittel oder Waschmaschinen?</h2>
+    <p class="lead small">Hier stehen Menschen genau in dem Moment, in dem sie zum ersten Mal selbst Wäsche waschen.</p>
+  </div>
+  <a class="btn btn-ink" href="/werben.html">Werbemöglichkeiten ansehen</a>
+</section>
+</main>
+
+<footer class="foot wrap">
+  <p><b>Mamaschine</b> · Weil Mama nicht mehr mitwäscht.</p>
+  <p class="fine">Mit Augenzwinkern gemacht, für alle Geschlechter, die vor Waschmaschinen Respekt haben. Die Anleitung ist eine Hilfe, kein Ersatz für das Pflegeetikett. Fotos werden nur für die Analyse verwendet und nicht gespeichert. Deine Maschinen merkt sich nur dein Browser.</p>
+  <p class="fine"><a href="/werben.html">Werben auf Mamaschine</a></p>
+</footer>
+
+<div class="timerbar" id="timerbar" hidden><span id="timerText"></span><button type="button" id="timerStop" class="text-link">Ausblenden</button></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="/app.js"></script>
+</body>
+</html>
