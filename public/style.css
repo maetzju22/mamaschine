@@ -297,3 +297,20 @@ input[type=range]{width:100%;accent-color:var(--ink);height:44px}
 #machineNew,#mTabFoto,#mTabManuell,#lTabFoto,#lTabPicker{display:flex;flex-direction:column;gap:12px}
 .drawer-wrap{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
 .drawer-wrap .drawer{margin-top:0}
+
+/* install sheet */
+.install-link{font-size:15px}
+.isheet{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--ink) 45%,transparent);display:flex;align-items:flex-end;justify-content:center;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.isheet-card{width:100%;max-width:480px;background:var(--card);border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--yellow);padding:18px;display:flex;flex-direction:column;gap:14px;animation:sheetUp .28s ease-out}
+.isheet-head{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:start}
+.isheet-head img{border-radius:12px;border:2px solid var(--ink)}
+.isheet-head h2{font-family:var(--f-display);font-weight:400;font-size:26px;text-transform:uppercase;line-height:1.08}
+.isheet-head p{font-size:15px;color:var(--muted);margin-top:4px}
+.isheet-steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:8px}
+.isheet-steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center;background:var(--paper);border-radius:10px;padding:10px;font-weight:600;font-size:15px}
+.isheet-steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink);display:grid;place-items:center;font-family:var(--f-display);font-size:16px}
+.isheet-actions{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.isheet-actions .text-link{align-self:center}
+html.isheet-open{overflow:hidden}
+@keyframes sheetUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+@media (display-mode: standalone){.install-link,[data-install]{display:none!important}}

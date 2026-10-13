@@ -507,12 +507,14 @@ function renderResult(data, { machine, demo = false }) {
     $("againBtn").onclick = newWash;
   };
   draw(); show("result");
+  if (!demo) window.mmInstall?.maybePrompt();
 }
 function started(L, demo) {
   if (!demo) {
     const n = store.get("count", 0) + 1; store.set("count", n); renderCounter();
     const badge = BADGES.find(([k]) => k === n);
     toast(badge ? badge[1] : `Waschgang Nr. ${n} ohne Mama. Respekt.`);
+    window.mmInstall?.maybePrompt();
   } else toast("Im echten Leben würde das jetzt zählen.");
   const mins = Number(L.duration_min) || 120;
   const end = Date.now() + mins * 60000;
