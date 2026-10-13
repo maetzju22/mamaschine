@@ -314,3 +314,18 @@ input[type=range]{width:100%;accent-color:var(--ink);height:44px}
 html.isheet-open{overflow:hidden}
 @keyframes sheetUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
 @media (display-mode: standalone){.install-link,[data-install]{display:none!important}}
+
+/* detergent photo (deliberately smaller than the main photo slots) */
+.det-photo{display:flex;flex-direction:column;gap:8px;border-top:2px dashed var(--line);padding-top:12px}
+.det-row{display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+.det-btn{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 12px;border:2px solid var(--ink);border-radius:10px;background:var(--paper);font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
+.det-gal{font-size:14px;flex:none}
+.det-btn input,.det-gal input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.det-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.det-thumbs:empty{display:none}
+.det-thumb{position:relative;width:56px;height:56px}
+.det-thumb img{width:56px;height:56px;object-fit:cover;border-radius:8px;border:2px solid var(--ink)}
+.det-thumb button{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);background:var(--yellow);font-weight:800;line-height:1;padding:0;display:grid;place-items:center}
+.det-known{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;background:var(--blue-soft);border-radius:10px;padding:6px 10px}
+.det-known button{background:none;border:0;text-decoration:underline;font-size:13px;color:var(--muted);min-height:32px}
+.dose-product{font-family:var(--f-mono);font-size:13px;background:var(--yellow);border:2px solid var(--ink);border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:4px}

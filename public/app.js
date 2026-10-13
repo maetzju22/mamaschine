@@ -16,6 +16,8 @@ const state = {
   lTab: "foto",
   machinePhoto: null,
   laundry: [],
+  detPhotos: [],
+  knownDet: store.get("detergents", []),
   picked: new Set(),
   amount: 4.5,
   dirt: 1,
@@ -190,6 +192,33 @@ async function addLaundry(files) {
 }
 $("lInput").onchange = (e) => { addLaundry(e.target.files); e.target.value = ""; };
 $("lGallery").onchange = (e) => { addLaundry(e.target.files); e.target.value = ""; };
+
+
+/* ================= detergent photos ================= */
+function renderDet() {
+  const box = $("dThumbs"); box.innerHTML = "";
+  state.detPhotos.forEach((p, i) => {
+    const d = document.createElement("div"); d.className = "det-thumb";
+    d.innerHTML = `<img src="${p.url}" alt="Waschmittel ${i + 1}"><button type="button" aria-label="Foto entfernen">×</button>`;
+    d.querySelector("button").onclick = () => { state.detPhotos.splice(i, 1); renderDet(); };
+    box.append(d);
+  });
+  if (!state.detPhotos.length && state.knownDet.length) {
+    const k = document.createElement("div"); k.className = "det-known";
+    k.innerHTML = `<span>Gemerkt: ${state.knownDet.map(esc).join(", ")}</span><button type="button">vergessen</button>`;
+    k.querySelector("button").onclick = () => { state.knownDet = []; store.set("detergents", []); renderDet(); };
+    box.append(k);
+  }
+  $("dHint").textContent = state.detPhotos.length
+    ? (state.ai === false ? "Foto-KI macht gerade Pause, das Foto wird erst später genutzt." : "Mamaschine liest Marke, Sorte und Dosiertabelle.")
+    : state.knownDet.length ? "Neues Waschmittel? Einfach fotografieren." : "Optional. Mamaschine erkennt Marke und Sorte und dosiert danach.";
+}
+async function addDet(files) {
+  for (const f of files) { if (state.detPhotos.length >= 2) { toast("Zwei Waschmittel-Fotos reichen."); break; } state.detPhotos.push(await shrink(f, 1024)); }
+  renderDet();
+}
+$("dInput").onchange = (e) => { addDet(e.target.files); e.target.value = ""; };
+$("dGallery").onchange = (e) => { addDet(e.target.files); e.target.value = ""; };
 
 /* ================= picker ================= */
 const CATS = {
@@ -376,20 +405,27 @@ $("goBtn").onclick = async () => {
   const pendingPhoto = !machine && state.machinePhoto;
   if (!machine && !pendingPhoto) { showErr("Erst die Waschmaschine: fotografieren oder kurz eintippen. Dauert 20 Sekunden, einmalig."); $("stepMachine").scrollIntoView({ behavior: "smooth" }); return; }
 
-  if (state.lTab === "picker") {
+  const usePicker = state.lTab === "picker";
+  if (usePicker) {
     if (!state.picked.size) { showErr("Tipp an, was im Haufen liegt. Mindestens ein Teil."); return; }
+    const wantsAI = pendingPhoto || state.detPhotos.length;
     if (pendingPhoto && !state.ai) { showErr("Die Foto-KI macht gerade Pause. Tipp deine Maschine bitte kurz ein."); return; }
-    if (pendingPhoto) { showErr("Für eine Maschine per Foto brauche ich auch ein Wäschefoto. Oder tipp die Maschine kurz ein."); return; }
-    startSpin([]);
-    await wait(2600);
-    stopSpin(); renderResult(ruleEngine(machine), { machine });
-    return;
+    if (!wantsAI || !state.ai) {
+      if (state.detPhotos.length) toast("Waschmittelfoto braucht die Foto-KI. Ich rechne ohne.");
+      startSpin([]);
+      await wait(2600);
+      stopSpin(); renderResult(ruleEngine(machine), { machine });
+      return;
+    }
+  } else {
+    if (!state.laundry.length) { showErr("Da fehlt noch das Foto vom Wäschehaufen. Oder nimm „Ohne Foto“."); return; }
+    if (state.ai === false) { showErr("Die Foto-KI macht gerade Pause. Nimm „Ohne Foto“, das geht immer."); return; }
   }
 
-  if (!state.laundry.length) { showErr("Da fehlt noch das Foto vom Wäschehaufen. Oder nimm „Ohne Foto“."); return; }
-  if (state.ai === false) { showErr("Die Foto-KI macht gerade Pause. Nimm „Ohne Foto“, das geht immer."); return; }
-
-  const images = (pendingPhoto ? [state.machinePhoto] : []).concat(state.laundry);
+  const tag = (role) => (img) => ({ ...img, role });
+  const images = (pendingPhoto ? [tag("machine")(state.machinePhoto)] : [])
+    .concat(usePicker ? [] : state.laundry.map(tag("laundry")))
+    .concat(state.detPhotos.map(tag("detergent")));
   state.ctl = new AbortController();
   startSpin(images.map((i) => i.url));
   const minSpin = wait(3000);
@@ -397,10 +433,12 @@ $("goBtn").onclick = async () => {
     const r = await fetch("/api/analyze", {
       method: "POST", signal: state.ctl.signal, headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        images: images.map(({ media_type, data }) => ({ media_type, data })),
+        images: images.map(({ media_type, data, role }) => ({ media_type, data, role })),
         machinePhoto: !!pendingPhoto,
         machine: machine ? { brand: machine.brand, model: machine.model, kind: machine.kind, capacity_kg: machine.capacity_kg, compartments: machine.compartments, programs: machine.programs, controls: machine.controls } : null,
         detergent: state.detergent, softener: state.softener, panic: state.panic, note: $("note").value,
+        knownDetergents: state.detPhotos.length ? [] : state.knownDet,
+        ...(usePicker ? { items: [...state.picked].map((k) => CATS[k].label), amount_kg: state.amount, dirt: { 0.75: "leicht", 1: "normal", 1.35: "stark (Festival)" }[state.dirt] || "normal" } : {}),
       }),
     });
     const data = await r.json().catch(() => ({}));
@@ -414,6 +452,11 @@ $("goBtn").onclick = async () => {
       state.machinePhoto = null; resetMachineShot();
       useMachine = activeMachine();
       toast(`${[data.machine.brand, data.machine.model].filter(Boolean).join(" ") || "Maschine"} gespeichert.`);
+    }
+    if (Array.isArray(data.detergents) && data.detergents.length) {
+      state.knownDet = data.detergents.map((d) => [d.name, d.type].filter(Boolean).join(" · ")).filter(Boolean).slice(0, 6);
+      store.set("detergents", state.knownDet);
+      state.detPhotos = []; renderDet();
     }
     stopSpin(); renderResult(data, { machine: useMachine });
   } catch (e) {
@@ -478,6 +521,7 @@ function renderResult(data, { machine, demo = false }) {
       <div class="dose">
         ${cupSvg(L.detergent?.ml)}
         <div style="min-width:0">
+          ${L.detergent?.product ? `<span class="dose-product">${esc(L.detergent.product)}</span>` : ""}
           <div class="dose-amt">${esc(L.detergent?.amount)}</div>
           <div class="dose-where">${esc(L.detergent?.where)}</div>
           ${L.detergent?.note ? `<p class="dose-note">${esc(L.detergent.note)}</p>` : ""}
@@ -646,5 +690,5 @@ const TIPS = [
 
 /* ================= init ================= */
 if (!activeMachine() && state.machines[0]) state.activeId = state.machines[0].id;
-renderMachines(); renderCounter(); runTimer(); checkAI();
+renderMachines(); renderCounter(); renderDet(); runTimer(); checkAI();
 })();

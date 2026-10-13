@@ -156,6 +156,14 @@
         <button type="button" class="chip" data-v="Keine Ahnung, irgendeine Flasche" aria-pressed="false">Keine Ahnung</button>
       </div>
     </div>
+    <div class="det-photo">
+      <div class="det-row">
+        <label class="det-btn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>Waschmittel fotografieren<input id="dInput" type="file" accept="image/*" capture="environment"></label>
+        <label class="text-link det-gal">Galerie<input id="dGallery" type="file" accept="image/*" multiple></label>
+      </div>
+      <div class="det-thumbs" id="dThumbs"></div>
+      <p class="fine" id="dHint">Optional. Mamaschine erkennt Marke und Sorte und dosiert danach.</p>
+    </div>
     <div class="chips"><button type="button" class="chip" id="softChip" aria-pressed="false">+ Weichspüler vorhanden</button></div>
     <div class="field">
       <span>Wie hilflos bist du heute? <b id="panicLabel" class="panic-l"></b></span>
