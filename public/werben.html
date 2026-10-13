@@ -103,13 +103,13 @@
 <section class="ad-sec wrap" id="kontakt">
   <p class="kicker">Kontakt</p>
   <h2 class="sec-h">Reden wir drüber.</h2>
-  <p class="lead small">Schreiben Sie uns kurz, was Sie bewerben möchten. Wir melden uns innerhalb von zwei Werktagen. Direkt per Mail: <span class="mail">ads@mamaschine.net</span></p>
+  <p class="lead small">Schreiben Sie uns kurz, was Sie bewerben möchten. Wir melden uns innerhalb von zwei Werktagen.</p>
 
   <form class="form" name="werbung" method="POST" action="/danke.html" data-netlify="true" netlify-honeypot="bot-field">
     <input type="hidden" name="form-name" value="werbung">
     <p class="hp"><label>Nicht ausfüllen <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
     <div class="grid2">
-      <label class="field"><span>Unternehmen</span><input id="f-company" name="unternehmen" required autocomplete="organization"></label>
+      <label class="field"><span>Unternehmen <em>(falls vorhanden)</em></span><input id="f-company" name="unternehmen" autocomplete="organization"></label>
       <label class="field"><span>Ihr Name</span><input id="f-name" name="name" required autocomplete="name"></label>
       <label class="field"><span>E-Mail</span><input id="f-mail" type="email" name="email" required autocomplete="email"></label>
       <label class="field"><span>Telefon <em>(optional)</em></span><input id="f-tel" type="tel" name="telefon" autocomplete="tel"></label>
@@ -122,6 +122,7 @@
         <option>Wohnen, Umzug & Versicherung</option>
         <option>Agentur</option>
         <option>Anderes</option>
+        <option>Privat, Datenschutz oder Feedback</option>
       </select>
     </label>
     <fieldset class="field" style="border:0;padding:0;margin:0"><legend style="padding:0;margin-bottom:6px">Interesse an</legend>
@@ -138,7 +139,7 @@
       <select id="f-budget" name="budget"><option value="">Noch offen</option><option>unter 5.000 €</option><option>5.000–20.000 €</option><option>20.000–50.000 €</option><option>über 50.000 €</option></select>
     </label>
     <label class="field"><span>Ihre Nachricht</span><textarea id="f-msg" name="nachricht" rows="4" placeholder="Was möchten Sie bewerben, ab wann, für welchen Markt?"></textarea></label>
-    <label class="consent"><input type="checkbox" name="einwilligung" value="ja" required> <span>Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage verwendet und an ads@mamaschine.net weitergeleitet werden. Details in der <a href="/datenschutz.html">Datenschutzerklärung</a>.</span></label>
+    <label class="consent"><input type="checkbox" name="einwilligung" value="ja" required> <span>Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage verwendet werden. Details in der <a href="/datenschutz.html">Datenschutzerklärung</a>.</span></label>
     <button class="btn btn-yellow btn-big" type="submit">Anfrage senden</button>
   </form>
 </section>
