@@ -22,7 +22,7 @@ const state = {
   amount: 4.5,
   dirt: 1,
   detergent: "Flüssigwaschmittel",
-  softener: false,
+  softener: store.get("softener", false),
   panic: 3,
   ai: null,
   ctl: null,
@@ -279,7 +279,8 @@ function chipGroup(id, cb) {
 chipGroup("amountChips", (v) => (state.amount = Number(v)));
 chipGroup("dirtChips", (v) => (state.dirt = Number(v)));
 chipGroup("detChips", (v) => (state.detergent = v));
-$("softChip").onclick = () => { state.softener = !state.softener; $("softChip").setAttribute("aria-pressed", String(state.softener)); };
+$("softChip").setAttribute("aria-pressed", String(state.softener));
+$("softChip").onclick = () => { state.softener = !state.softener; store.set("softener", state.softener); $("softChip").setAttribute("aria-pressed", String(state.softener)); };
 
 const PANIC_L = ["", "Profi", "Geht schon", "Unsicher", "Mama hat immer …", "Was ist eine Waschmaschine?"];
 $("panic").oninput = () => { state.panic = Number($("panic").value); $("panicLabel").textContent = PANIC_L[state.panic]; };
@@ -351,7 +352,8 @@ function ruleEngine(machine) {
       temp_c: temp, spin_rpm: spin, duration_min: G.dur,
       extras: state.dirt > 1.2 ? ["Intensiv / Flecken"] : [],
       detergent: { amount, ml, where, symbol, note },
-      softener: useSoft ? { use: true, amount: "25–30 ml", where: compartmentWhere(machine, "✿") } : { use: false },
+      softener: useSoft ? { use: true, amount: "25–30 ml", where: compartmentWhere(machine, "✿") }
+        : { use: false, reason: G.nosoft || g.withSport ? "Sportsachen verkleben davon und riechen schneller." : gk === "hygiene" ? "Handtücher saugen sonst schlechter." : "" },
       steps: buildSteps(machine, G, { kg, cap, temp, spin, caps: det === "Caps", useSoft, program: null }),
       tipGroup: G.tip,
     };
@@ -562,7 +564,8 @@ function renderResult(data, { machine, demo = false }) {
           <div class="dose-amt">${esc(L.detergent?.amount)}</div>
           <div class="dose-where">${esc(L.detergent?.where)}</div>
           ${L.detergent?.note ? `<p class="dose-note">${esc(L.detergent.note)}</p>` : ""}
-          ${L.softener?.use ? `<p class="dose-note"><b>Weichspüler:</b> ${esc(L.softener.amount)} → ${esc(L.softener.where)}</p>` : ""}
+          ${L.softener?.use ? `<p class="dose-note"><b>Weichspüler:</b> ${esc(L.softener.amount || "25–30 ml")} → ${esc(L.softener.where || "Fach mit der Blume ✿")}</p>`
+            : state.softener ? `<p class="dose-note"><b>Weichspüler:</b> diesmal nicht. ${esc(L.softener?.reason || "Passt zu dieser Ladung nicht.")}</p>` : ""}
         </div>
         ${(() => { const d = drawerHtml(machine, L, data); return d ? `<div class="drawer-wrap">${d}</div>` : ""; })()}
       </div>

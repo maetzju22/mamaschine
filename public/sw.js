@@ -1,5 +1,5 @@
 /* Mamaschine service worker: makes the app installable and usable with bad reception in the Waschkeller. */
-const VERSION = "mm-v4";
+const VERSION = "mm-v5";
 const CORE = [
   "/", "/index.html", "/style.css", "/app.js", "/install.js",
   "/werben.html", "/impressum.html", "/datenschutz.html",

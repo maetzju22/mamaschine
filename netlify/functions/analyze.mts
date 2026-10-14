@@ -79,7 +79,7 @@ const TOOL_SCHEMA = {
             properties: { product: str, amount: str, ml: num, where: str, symbol: { type: "string", description: "I, II, ✿ oder Trommel" }, note: str },
             required: ["amount", "where", "symbol"],
           },
-          softener: { type: "object", properties: { use: { type: "boolean" }, amount: str, where: str }, required: ["use"] },
+          softener: { type: "object", properties: { use: { type: "boolean" }, amount: str, where: str, reason: { type: "string", description: "Nur wenn use=false: kurzer Grund, max. 15 Wörter." } }, required: ["use"] },
           steps: { type: "array", minItems: 4, maxItems: 9, items: { type: "object", properties: { title: str, detail: str }, required: ["title", "detail"] } },
         },
         required: ["name", "program", "temp_c", "spin_rpm", "detergent", "softener", "steps"],
@@ -115,7 +115,9 @@ function buildPrompt(b: Body, roles: Role[]) {
 ${machineBlock}
 ${laundryBlock}
 ${detBlock}
-Weichspüler: ${b.softener ? "vorhanden" : "keiner angegeben"}.
+${b.softener
+    ? "WEICHSPÜLER: Der User HAT Weichspüler zuhause, auch wenn er auf keinem Foto zu sehen ist. Plane ihn für jede Ladung ein, bei der er fachlich passt (softener.use = true, Menge in ml, Fach mit Blume ✿), und erwähne ihn auch in den Schritten. Lass ihn nur weg, wo er schadet: Handtücher, Sport- und Funktionswäsche, Outdoor/Membran, Mikrofaser, Daunen. Dann softener.use = false und in softener.reason kurz und freundlich, warum er hier nicht reinkommt. Schreib niemals, dass kein Weichspüler vorhanden ist."
+    : "WEICHSPÜLER: Der User hat keinen angegeben. softener.use = false. Behaupte nicht, er sei zwingend nötig; höchstens als optionaler Tipp in softener.reason."}
 Notiz: ${String(b.note || "").slice(0, 400) || "keine"}
 Erklär-Level: ${PANIC[panic]}
 Wasser: mittlere Härte (Wien), außer die Notiz sagt was anderes.
